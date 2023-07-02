@@ -117,6 +117,12 @@ border-radius: 20px;
 <!-- Header with full-height image -->
 <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
   <div class="w3-display-left w3-text-black" style="padding:150px;padding-top:20px;height:100%"><BR><BR>
+    
+    <form action="/exit" class="form-containers" method="post" >
+      <div align="right">
+        <button  class="w3-button w3-black w3-padding-medium w3-small w3-margin-top w3-opacity w3-hover-opacity-off">Exit</button></div>
+      </form>
+      <div class="xx" style="padding:10px;"></div>
     <img align="left" src="static\tifr-logo-blue (1).png" style="height: 80px;">
     <img align="right" src="static\vesit.png" style="height: 80px;">
     <h1 align="middle" style="color: black;padding-top:20px; font-weight: bold;">Stage 1</h1>
@@ -148,39 +154,6 @@ border-radius: 20px;
   <div align="middle">
     <button  class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off" onclick="openForm()">Display old images</button></p>
   </div>
-  <div class="xx" style="padding:20px;"></div>
-    <div class="form-popup" id="myForm" >
-      <form action="/concentric" class="form-container" method="post" >
-        <br>
-        <h1 style="color: black;">Survey of new board</h1>
-    
-        <label for="email" style="color: black;"><b>Board ID</b></label>
-        <input type="text" placeholder="Enter BoardID"  required>
-    
-        <label for="psw" style="color: black;"><b>Manfacturer</b></label>
-        <input type="text" placeholder="Enter Manufacturer"  required>
-
-        <label for="boards" style="color: black;"><b><br>Board Type</br></b></label>
-        <select id="boards" >
-          <option value="SH_preseries">SH_preseries</option>
-          <option value="SH_test">SH_test</option>
-          <option value="SH_production">SH_production</option>
-          <option value="NSH_tes">NSH_test</option>
-          <option value="NSH_preseries">NSH_preseries</option>
-        </select>
-
-        <!-- <label for="image" style="color: black;"><b><br>Upload a Image</br></b></label>
-        <input type="file" id="myFile"  accept=".jpg, .jpeg, .png"> -->
-<br>
-        <label for="filepath" style="color: black;"><b>File Path 1</b></label>
-        <input type="text" placeholder="Filepath" name="flag" >
-
-
-        <button type="submit" class="btn" value="click" >Submit</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-      </form>
-    </div>
-    <div>
       
       {% if hi %}
       <center>

@@ -17,7 +17,7 @@ app=Flask(__name__)
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('survey1.html')
+    return render_template('index.html')
 @app.route('/contact',methods=['POST','GET'])
 def contact():
     # C:/Users/AS/Desktop/TIFR/813 pictures/Image2.jpg
@@ -299,7 +299,7 @@ def contact():
     back_im.save('C:/Users/sneha/Downloads/TIFR/TIFR/Images/Image2.jpg', quality=95)
     # cv2.waitKey(0)
     thdict={"lineLength":lengthDict,"Intersection":intersectCoord,"Circle":circleCoord, "offset":dist}
-    return render_template("index.html" , name=thdict)
+    return render_template("results2.html" , name=thdict)
 
 # path= C:/Users/AS/Desktop/TIFR/HexaboardImages/Hexaboard_1/Hole1.jpg
 
@@ -472,6 +472,18 @@ def indextstage1():
 @app.route("/indexstage2",methods=['POST','GET'])
 def indextstage2():
     return render_template('indexstage2.html')
+
+@app.route("/exit",methods=['POST','GET'])
+def exit():
+    return render_template('index.html')    
+
+@app.route("/survey1",methods=['POST','GET'])
+def survey1():
+    return render_template('survey1.html')  
+
+@app.route("/survey2",methods=['POST','GET'])
+def survey2():
+    return render_template('survey2.html')    
 
 
 
