@@ -116,7 +116,7 @@ border-radius: 20px;
 <!-- Sidebar on small screens when clicking the menu icon -->
 <!-- Header with full-height image -->
 <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
-  <div class="w3-display-left w3-text-black" style="padding:150px;padding-top:20px; padding-left:240px;height:100%"><BR><BR>
+  <div class="w3-display-lefty w3-text-black" style="padding:150px; padding-left:240px;height:100%"><BR><BR>
     
      
     <form action="/exit" class="form-containers" method="post" >
@@ -160,30 +160,6 @@ border-radius: 20px;
     </div>
        
 <div class="xx" style="padding:20px;"></div>
-  <div>
-    {% if name %}
-    <center>
-      <h1 align="middle" style="font-weight: bold;">Results</h1>
-      <img src="static/Image2.jpg" style="height: 30%; width: 30%;">
-      <h3 style="color: black ;font-weight:bold" class="let_space">
-        Lengths of the arms are:<br>
-        Line 1 length is {{name.lineLength.line1}}<br>
-        Line 2 length is {{name.lineLength.line2}}<br>
-        Line 3 length is {{name.lineLength.line3}}<br>
-        Coordinates of the intersection of the arms are X:{{name.Intersection.X}}<br>
-        Coordinates of the intersection of the arms are Y:{{name.Intersection.Y}}<br>
-        Coordinates of the center of the circle are X:{{name.Circle.X}}<br>
-        Coordinates of the center of the circle are Y:{{name.Circle.Y}}<br>
-        Offset of the Coordinates {{name.offset}}<br>
-      </h3>
-      <a href = "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
-    Download = "test_image">
-       <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off"type = "button"> Download Results </button>
-    </a>
-    <div class="xx" style="padding:20px;"></div>
-    </center>
-    {% endif %}
-  </div>
  
 </div> 
 

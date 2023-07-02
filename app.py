@@ -10,6 +10,8 @@ from sympy import symbols, Eq, solve
 from PIL import Image
 import PIL
 from ultralytics import YOLO
+import pandas as pd
+import csv
 
 # file saved in: C:\Users\AS\Desktop\TIFR\Integration_BE\TIFR
 
@@ -18,9 +20,31 @@ app=Flask(__name__)
 @app.route("/home")
 def home():
     return render_template('index.html')
+
+@app.route('/control',methods=['POST','GET'])
+def control():
+    path="tp.csv"
+    manufacturer_id=""
+    board_id=""
+    board_type=""
+    file_path=""
+    with open(path, mode ='r', encoding="utf8")as file:
+    # reading the CSV file
+        csvFile = csv.reader(file)
+        # displaying the contents of the CSV file
+        for lines in csvFile:
+            print(lines)
+            manufacturer_id=lines[1]
+            board_id=lines[0]
+            board_type=lines[2]
+            file_path=lines[3]
+    thdict={"board_id":board_id,"manufacturer_id":manufacturer_id,"board_type":board_type, "file_path":file_path}
+    return render_template("index.html" , cont=thdict)
+
 @app.route('/contact',methods=['POST','GET'])
 def contact():
     # C:/Users/AS/Desktop/TIFR/813 pictures/Image2.jpg
+    inRange=["Yes","Yes","Yes","Yes",""]
     output= request.form.to_dict()
     print(output)
     name=output["flag"]
@@ -70,16 +94,17 @@ def contact():
     # print(f"{x_cord} {y_cord} {radius}")
     print(f"The center coordinates are: {x_cord},{y_cord}")
     print(f"The radius of the circle is: {radius}")
-    if ( x_cord == 0 and y_cord ) or radius == 0:
+    if ( x_cord == 0 and y_cord ==0 ) or radius == 0:
         print("The first circle is not detected###########################################################")
-        return ""                         #----------------------------------------------have to add return statements
+        rend="The first circle is not detected"
+        return render_template("results2.html" , sl={"Render":rend})
     img = Image.open(path)
     box = (x_cord - radius - 10, y_cord - radius - 10, x_cord + radius + 15, y_cord + radius + 10)
     img2 = img.crop(box)
-    img2.save(f'C:/Users/sneha/Downloads/TIFR/TIFR/Images/myimage_cropped.jpg')
+    img2.save(f'Images/myimage_cropped.jpg')
 
 
-    image = cv2.imread(f"C:/Users/sneha/Downloads/TIFR/TIFR/Images/myimage_cropped.jpg")
+    image = cv2.imread(f"Images/myimage_cropped.jpg")
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Use canny edge detection
     edges = cv2.Canny(gray, 50, 150, apertureSize=3)
@@ -146,8 +171,10 @@ def contact():
     # print(lines_list)
     if len(lines_list) < 3 or len(list_slope) < 3:
         print("Only two lines detected. Please check the image quality##########################################")
-        return ""                         #----------------------------------------------have to add return statements
+        rend="Only two lines detected. Please check the image quality"
+        return render_template("results2.html" , sl={"Render":rend})
     deg_slope=[]
+    # -------------checking mechanism for detected lines (minimum angle between 2 line to be 120). Eg for image Image 6
     for slp in list_slope:
         # print(type(slp))
         deg = math.degrees(math.atan(float(slp)))
@@ -175,7 +202,8 @@ def contact():
         inc = slp + 125
     if flag == False:
         print("Slopes not aligning well. Check the positioning")
-        return ""                  #----------------------------------------------have to add return statements
+        rend="Slopes not aligning well. Check the positioning"
+        return render_template("results2.html" , sl={"Render":rend})
     o = 1
     lengthDict={}
     # Length of the lines
@@ -187,6 +215,9 @@ def contact():
         lengthDict[f"line{o}"]=length
         print(f'Length of line{o} {length}')
         o = o + 1
+        if float(length)<70 or float(length)>120:
+            inRange[0]="No"
+            print("Error-V7")            #----------------------------------------------------------V7
     print()
 
     # Intersection point
@@ -233,16 +264,28 @@ def contact():
     p = "{:.0f}".format(a)
     b = solve((eq1, eq2), (x, y))[y]
     q = "{:.0f}".format(b)
-    print(f'Co-ordinates of intersection of the arms is: (x: {p}, y: {q})')
+    intersectX = int(p) + x_cord - radius - 10
+    intersectY = int(q) + y_cord - radius - 10
+    print(f'Co-ordinates of intersection of the arms is: (x: {intersectX}, y: {intersectY})')
     print(f'The center of the circle is: (x: {x_cord}, y: {y_cord})')
     # print(a)
     # print(b)
     # 308 256
-    intersectCoord={"X":p,"Y":q}
-    circleCoord={"X":x_cord,"Y":y_cord}
-    innerCord = [int(p), int(q)]
-   
+    if (intersectX<300 or intersectX>350) and (intersectY<230 or intersectY>270):
+        inRange[1]="No"
+        print("Error-V8 & V9")            #-------------------------------------------V8 & V9
 
+    intersectCoord={"X":intersectX,"Y":intersectY}
+    circleCoord={"X":x_cord,"Y":y_cord}
+    innerCord = [int(intersectX), int(intersectY)]
+    outerCord = [int(x_cord), int(y_cord)]
+    intersect=(float(intersectX),float(intersectY))
+    center=(float(x_cord),float(y_cord))
+    print("Intersect----",intersect)
+    print("center----",center)
+    ang1 = np.arctan2(*intersect[::-1])
+    ang2 = np.arctan2(*center[::-1])
+    orient = np.rad2deg((ang2 - ang1) % (2 * np.pi))
     x_cord = 0
     y_cord = 0
     radius = 0
@@ -283,31 +326,56 @@ def contact():
     cv2.circle(image, (int(x_cord), int(y_cord)), 1, (0, 0, 255), 5)
     cv2.circle(image, (int(x_cord), int(y_cord)), radius, (0, 0, 255), 2)
     
-    outerCord = [int(x_cord), int(y_cord)]
+    
     cv2.line(image,innerCord,outerCord,(255,0,0),2)
     dist = math.dist(innerCord, outerCord)
     print(f"The offset of the center of circles and intersection point is: {dist}")
+    if dist>20:
+        inRange[2]="No"
+        print("Error-V10")     #-------------------------------------------------------V10
+
     # cv2.imshow(image)
     # cv2.imshow('hello', img)
     # print(x)
-    pq='C:/Users/sneha/Downloads/TIFR/TIFR/Images/myimage.jpg'
+    pq='Images/myimage.jpg'
     cv2.imwrite(pq, image)
     im1 = Image.open(path)
     im2 = Image.open(pq)
     back_im = im1.copy()
     back_im.paste(im2, (xaxis - radq - 10, yaxis - radq - 10))
-    back_im.save('C:/Users/sneha/Downloads/TIFR/TIFR/Images/Image2.jpg', quality=95)
+    back_im.save('static/Image2.jpg', quality=95)
     # cv2.waitKey(0)
-    thdict={"lineLength":lengthDict,"Intersection":intersectCoord,"Circle":circleCoord, "offset":dist}
+    
+    print("Orientation of intersection of arms with respect to center of circle is ",orient)
+    if orient<0 or orient>3:
+        inRange[3]="No"
+        print("Error-V11")       #------------------------------------------------------------------V11
+
+    print(inRange)
+    accepted=True
+    for io in inRange:
+        if io=="No":
+            accepted=False
+    if accepted==False:
+        accepted="Not Accepted"
+    else:
+        accepted="Accepted"
+    values=[lengthDict,intersectCoord,dist,orient,accepted]
+    col=["V7","V8 & 9","V10","V11","V12"]
+    csv = {'':col, 'Values': values, 'inRange': inRange}
+    df = pd.DataFrame(csv)
+    df.to_csv('answer.csv')
+    thdict={"lineLength":lengthDict,"Intersection":intersectCoord,"Circle":circleCoord, "offset":dist, "Orientation": orient}
     return render_template("results2.html" , name=thdict)
 
 # path= C:/Users/AS/Desktop/TIFR/HexaboardImages/Hexaboard_1/Hole1.jpg
 
 @app.route('/concentric',methods=['POST','GET'])
 def concentric():
-    if(os.path.exists("C:/Users/sneha/Downloads/TIFR/TIFR/static/Hole.jpg")):
-        os.remove("C:/Users/sneha/Downloads/TIFR/TIFR/static/Hole.jpg/image0.jpg")
-        os.rmdir("C:/Users/sneha/Downloads/TIFR/TIFR/static/Hole.jpg")
+    inRange=["","Yes","Yes","Yes","Yes","Yes",""]
+    if(os.path.exists("static/Hole.jpg")):
+        os.remove("static/Hole.jpg/image0.jpg")
+        os.rmdir("static/Hole.jpg")
 
 
     if (os.path.exists("C:/Users/sneha/Downloads/TIFR/TIFR/runs/segment/predict")):
@@ -356,7 +424,10 @@ def concentric():
             # cv2.waitKey(0)
             break
 
-
+    if innerRadius<170 or innerRadius>176:
+        print("Error-V4")  #-----------------------------------------------------------------------V4
+        inRange[3]="No"
+   
     img = cv2.imread(path, cv2.IMREAD_COLOR)
 
     outerXCord = 0
@@ -408,8 +479,16 @@ def concentric():
             # break
             # cv2.waitKey(0)
         # x=x+1
-
+    if outerRadius<325 or outerRadius>350:
+        inRange[2]="No"
+        print("Error-V3")  #-----------------------------------------------------------------------V3
     print(f"{innerRadius}: inner radius and {outerRadius}: outer radius")
+
+    if innerRadius==0 or outerRadius==0:
+        print("This image has an issue")
+        rend="This image has an issue"
+        return render_template("results1.html" , sl={"Render":rend})
+    
     img = cv2.imread(path, cv2.IMREAD_COLOR)
     cv2.circle(img, (outerXCord, outerYCord), outerRadius, (0, 255, 0), 2)
     cv2.circle(img, (outerXCord, outerYCord), 1, (0, 0, 255), 3)
@@ -422,12 +501,28 @@ def concentric():
     outerCord = [outerXCord, outerYCord]
     dist = math.dist(innerCord, outerCord)
     print(f"The offset of the concentric circles is: {dist}")
-    p = "C:/Users/sneha/Downloads/TIFR/TIFR/Images/Hole.jpg"
+    if dist>20:
+        inRange[4]="No"
+        print("Error-V5")     #------------------------------------------------------------------V5
+    slope = 0
+    numera=(float(outerYCord)-float(innerYCord))
+    deno=(float(outerXCord)-float(innerXCord))
+    if outerXCord != 0 and outerYCord != 0 and innerXCord != 0 and innerYCord != 0  and deno != 0.0:
+        slope = float(numera/deno)
+    if deno == 0.0:
+        if numera >= 0.0:
+            slope = float('inf')
+        else:
+            slope = float('-inf')
+    if slope<-6 or slope>6:
+        inRange[5]="No"
+        print("Error-V6")        #---------------------------------------------------------------V6
+    p = "Images/Hole.jpg"
     # C:\Users\AS\Desktop\TIFR\Final Outputs\Concentric/Board1
     cv2.imwrite(p, img)
 
-    path = 'C:/Users/sneha/Downloads/TIFR/forLoop/best.pt'
-    path2 = 'C:/Users/sneha/Downloads/TIFR/localYOLO/best.pt'
+    path = 'training/bestV8.pt'
+    path2 = 'training/bestV5.pt'
     print(path)
     model2 = torch.hub.load('ultralytics/yolov5', 'custom', path2, force_reload=False)
     model = YOLO(path)
@@ -436,8 +531,10 @@ def concentric():
     u = result2.pandas().xyxy[0].name
     temp={}
     x=0
+    pads=[]
     for a in u:
-        temp[f"Pad{x}"] = a
+        # temp[f"Pad{x}"] = classDict[str(int(cls))]
+        pads.append(u[x])
         # print(a)
         x = x + 1
     res = model.predict(img, save=True, imgsz=640, conf=0.128, verbose=False)
@@ -445,6 +542,24 @@ def concentric():
     print("-----")
     areaContour=[]
     cn=0
+    classDict={'0': '11_SignalPad',
+                '1': '1_SignalPad',
+                '2': '3_SignalPad',
+                '3': '5_SignalPad',
+                '4': '7_SignalPad',
+                '5': '9_SignalPad',
+                '6': 'None'}
+    resList=res[0].boxes.cls.cpu().numpy().tolist()
+    print(pads)
+    num=0
+    for cls in resList:
+        print(classDict[str(int(cls))])
+        if classDict[str(int(cls))] in pads:
+            print("Exists")
+            temp[f"Pad{num}"] = classDict[str(int(cls))]
+            pads.append(u[num])
+            # print(a)
+            num = num + 1
     for q in range(len(res[0].masks.data)):
         if cn==3:
             break
@@ -456,14 +571,34 @@ def concentric():
         area = cv2.contourArea(contours[0])
         areaContour.append(area)
         cn=cn+1
+        # print(classDict[str(int(cls))])
         # print(area)
     print(areaContour)
+    
+    for q in range(len(areaContour)):
+        if areaContour[q]<4000 or areaContour[q]>6000:
+            print(q)
+            inRange[1]="No"
+            print("Error-V2")         #---------------------------------------------------------------V2
     picture = Image.open(r'C:/Users/sneha/Downloads/TIFR/TIFR/runs/segment/predict/image0.jpg')
-    picture = picture.save(f"C:/Users/sneha/Downloads/TIFR/TIFR/static/Image1.jpg")
-
-    thdict={"OrientationSignalPad":temp,"AreaOfPad":areaContour,"Offset":dist}
-
+    picture = picture.save(f"static/Image1.jpg")
+    print(inRange)
+    accepted=True
+    for io in inRange:
+        if io=="No":
+            accepted=False
+    if accepted==False:
+        accepted="Not Accepted"
+    else:
+        accepted="Accepted"
+    values=[temp,areaContour,outerRadius,innerRadius,dist,slope,accepted]
+    col=["V1","V2","V3","V4","V5","V6","V12"]
+    csv = {'':col, 'Values': values, 'inRange': inRange}
+    df = pd.DataFrame(csv)
+    df.to_csv('answer.csv')
+    thdict={"OrientationSignalPad":temp,"AreaOfPad":areaContour,"Offset":dist,"Orientation":slope,"InRange":inRange,"Accepted":accepted}
     return render_template('results1.html',hi=thdict)
+
 
 @app.route("/indexstage1",methods=['POST','GET'])
 def indextstage1():
@@ -484,8 +619,6 @@ def survey1():
 @app.route("/survey2",methods=['POST','GET'])
 def survey2():
     return render_template('survey2.html')    
-
-
 
 if __name__=='__main__':
     app.run(debug=True,port=5555)

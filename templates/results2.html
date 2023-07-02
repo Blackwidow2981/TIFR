@@ -44,7 +44,7 @@ body, html {
 
 /* The popup form - hidden by default */
 .form-popup {
-  display: none;
+  
   /* position: fixed; */
   overflow: hidden;
   width: 100%;
@@ -116,65 +116,40 @@ border-radius: 20px;
 <!-- Sidebar on small screens when clicking the menu icon -->
 <!-- Header with full-height image -->
 <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
-  <div class="w3-display-left w3-text-black" style="padding:150px;padding-top:20px;height:100%"><BR><BR>
-    
+  <div class="w3-display-lefty w3-text-black" style="padding:150px;height:100%"><BR><BR>
     <form action="/exit" class="form-containers" method="post" >
       <div align="right">
         <button  class="w3-button w3-black w3-padding-medium w3-small w3-margin-top w3-opacity w3-hover-opacity-off">Exit</button></div>
       </form>
       <div class="xx" style="padding:10px;"></div>
-    <img align="left" src="static\tifr-logo-blue (1).png" style="height: 80px;">
+      <img align="left" src="static\tifr-logo-blue (1).png" style="height: 80px;">
     <img align="right" src="static\vesit.png" style="height: 80px;">
-    <h1 align="middle" style="color: black;padding-top:20px; font-weight: bold;">Stage 1</h1>
-    <p align="left" style="color: black; font-weight: bold;">
-      Inspection of Bare Printed Circuit Boards (PCB)<br>In this stage, the subtasks involve verification of six key variables which determine the accuracy for assembly of components. After thorough analysis, the suggested range values for the said variables annotated with 'V' are as follows :
-    </p>
-    <dl style="color: black;font-weight:bold">
-      <dt>1. Signal Pads present in PCB: </dt>
-      <dd>a. Orientation (V1): Identified with a confidence score > 0.8</dd>
-      <dd>b. Area (V2): 4000 to 6000 
-        [includes signal pads at all positions in the board]</dd>
-    </dl>
-    <dl style="color: black; font-weight:bold">
-      <dt>2. Concentric Holes in PCB:  </dt>
-      <dd>a. Offset : </dd>
-      <dd>&emsp; I. Radius of bigger circle (V3): 325 to 350</dd>
-      <dd>&emsp; II. Radius of smaller circle (V4)  : 170 to 176</dd>
-      <dd>&emsp; III. Offset i.e R1 - R2 (V5) : 0 to 20 </dd>
-      <dd>b. Orientation of two centers of circles with respect to each other (V6) :  -6 to +6
-      </dd>
-    </dl>
-    <p>Note : V12 acts a decision variable which establishes that whether an image would be accepted or not as per the suggested ranges across all parameters.</p>
-    <div align="middle" class="Videolink1">
-    <iframe src="https://drive.google.com/file/d/1GX-4swOjWkGlSQ0QOAEmXa--51mTzzNI/preview" width="480" height="290" allow="autoplay"></iframe>
-    </div>
-    <div align="middle">
-    <button  class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off" onclick="openForm()">Process a new image</button>
-  </div>
-  <div align="middle">
-    <button  class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off" onclick="openForm()">Display old images</button></p>
-  </div>
-      
-      {% if hi %}
-      <center>
-        <h1 align="middle" style="font-weight: bold;">Results</h1>
-        <img src="static/Image1.jpg" style="height: 50%; width: 30%;">
-        <h3 style="color: rgb(0, 0, 10);font-weight:bold" class="let_space">
-          Orientation of the signal Pads are: {{hi.OrientationSignalPad}}<br>
-          Area of each signal Pad is: {{hi.AreaOfPad}}<br>
-          Offset of the centers of the circle is: {{hi.Offset}} 
-        </h3>
-        <a href = "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
-      Download = "test_image">
-         <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off"type = "button"> Download Results </button>
-      </a>
-      <div class="xx" style="padding:20px;"></div>
-      </center>
-      {% endif %}
-    </div>
     
-      
-    <div>
+  <div>
+    {% if name %}
+    <center>
+      <h1 align="middle" style="font-weight: bold;">Results</h1>
+      <img align="middle" src="static/Image2.jpg" style="height: 30%; width: 30%;">
+      <h3 style="color: black ;font-weight:bold" class="let_space">
+        Lengths of the arms are:<br>
+        Line 1 length is {{name.lineLength.line1}}<br>
+        Line 2 length is {{name.lineLength.line2}}<br>
+        Line 3 length is {{name.lineLength.line3}}<br>
+        Coordinates of the intersection of the arms are X:{{name.Intersection.X}}<br>
+        Coordinates of the intersection of the arms are Y:{{name.Intersection.Y}}<br>
+        Coordinates of the center of the circle are X:{{name.Circle.X}}<br>
+        Coordinates of the center of the circle are Y:{{name.Circle.Y}}<br>
+        Offset of the Coordinates {{name.offset}}<br>
+      </h3>
+      <a href = "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+    Download = "test_image">
+       <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off"type = "button"> Download Results </button>
+    </a>
+    <div class="xx" style="padding:20px;"></div>
+    </center>
+    {% endif %}
+  </div>     
+    
       
    
   </div> 

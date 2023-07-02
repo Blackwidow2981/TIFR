@@ -23,6 +23,10 @@ body, html {
   min-height: 100%;
 }
 
+table, th, td {
+  border:1px solid black;
+}
+
 .w3-bar .w3-button {
   padding: 16px;
 }
@@ -116,7 +120,7 @@ border-radius: 20px;
 <!-- Sidebar on small screens when clicking the menu icon -->
 <!-- Header with full-height image -->
 <header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
-  <div class="w3-display-left w3-text-black" style="padding:150px;padding-top:10px;height:100%"><BR><BR>
+  <div class="w3-display-lefty w3-text-black" style="padding:150px;height:100%"><BR><BR>
     <form action="/exit" class="form-containers" method="post" >
       <div align="right">
         <button  class="w3-button w3-black w3-padding-medium w3-small w3-margin-top w3-opacity w3-hover-opacity-off">Exit</button></div>
@@ -129,14 +133,37 @@ border-radius: 20px;
       {% if hi %}
       <center>
         <h1 align="middle" style="font-weight: bold;">Results</h1>
-        <img src="static/Image1.jpg" style="height: 50%; width: 30%;">
-        <h3 style="color: rgb(0, 0, 10);font-weight:bold" class="let_space">
-          Orientation of the signal Pads are: {{hi.OrientationSignalPad}}<br>
-          Area of each signal Pad is: {{hi.AreaOfPad}}<br>
-          Offset of the centers of the circle is: {{hi.Offset}} 
-        </h3>
-        <a href = "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
-      Download = "test_image">
+        <img align="middle" src="static/Image1.jpg" style="height: 50%; width: 30%;">
+        <div class="xx" style="padding:10px;"></div>
+        <table style="width:100%">
+          <tr>
+            <th> </th>
+            <th>Values</th>
+            <th>In Range</th>
+          </tr>
+          <tr>
+            <td>Orientation of the signal Pads</td>
+            <td>{{hi.OrientationSignalPad}}</td>
+            <td>{{hi.InRange[0]}} </td>
+          </tr>
+          <tr>
+            <td>Area of each signal Pad</td>
+            <td>{{hi.AreaOfPad}}</td>
+            <td>{{hi.InRange[1]}}</td>
+          </tr>
+          <tr>
+            <td>Offset of the centers of the circle</td>
+            <td>{{hi.Offset}}</td>
+            <td>{{hi.InRange[4]}}</td>
+          </tr>
+          <tr>
+            <td>Accepted</td>
+            <td>{{hi.Accepted}}</td>
+          </tr>
+        </table>
+        
+        <a href = "TIFR\answer.csv"
+      Download = "answer">
          <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off"type = "button"> Download Results </button>
       </a>
       <div class="xx" style="padding:20px;"></div>
@@ -210,6 +237,8 @@ function openForm2() {
 function closeForm() {
   document.getElementById("myForm").style.display = "none";
 }
+ 
+  
 </script>
 
 </body>
