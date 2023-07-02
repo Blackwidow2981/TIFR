@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="static/styles/styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+body, html {
+  height: 100%;
+  line-height: 1.8;
+}
+
+/* Full height image header */
+.bgimg-1 {
+  background-position: center;
+  background-size: cover;
+  background-image: url("static/MacBook Air - 4 (1).png");
+  min-height: 100%;
+}
+
+.w3-bar .w3-button {
+  padding: 16px;
+}
+
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  /* position: fixed; */
+  overflow: hidden;
+  width: 100%;
+  padding: auto;
+
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 100%;
+  padding: 80px;
+  
+  background: #F7F7F7;
+border-radius: 20px;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0 15px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+
+
+.form-container input[type=file]{
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0 15px 0;
+  border: none;
+  background: #f1f1f1;
+}
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+.mySlides{
+  border-color: #04AA6D ;
+}
+
+
+</style>
+</head>
+<body>
+
+  
+
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<!-- Header with full-height image -->
+<header class="bgimg-1 w3-display-container w3-grayscale-min" id="home">
+  <div class="w3-display-left w3-text-black" style="padding:150px;padding-top:20px;height:100%"><BR><BR>
+    <img align="left" src="static\tifr-logo-blue (1).png" style="height: 80px;">
+    <img align="right" src="static\vesit.png" style="height: 80px;">
+    <h1 align="middle" style="color: black;padding-top:20px; font-weight: bold;">Stage 1</h1>
+    <p align="left" style="color: black; font-weight: bold;">
+      Inspection of Bare Printed Circuit Boards (PCB)<br>In this stage, the subtasks involve verification of six key variables which determine the accuracy for assembly of components. After thorough analysis, the suggested range values for the said variables annotated with 'V' are as follows :
+    </p>
+    <dl style="color: black;font-weight:bold">
+      <dt>1. Signal Pads present in PCB: </dt>
+      <dd>a. Orientation (V1): Identified with a confidence score > 0.8</dd>
+      <dd>b. Area (V2): 4000 to 6000 
+        [includes signal pads at all positions in the board]</dd>
+    </dl>
+    <dl style="color: black; font-weight:bold">
+      <dt>2. Concentric Holes in PCB:  </dt>
+      <dd>a. Offset : </dd>
+      <dd>&emsp; I. Radius of bigger circle (V3): 325 to 350</dd>
+      <dd>&emsp; II. Radius of smaller circle (V4)  : 170 to 176</dd>
+      <dd>&emsp; III. Offset i.e R1 - R2 (V5) : 0 to 20 </dd>
+      <dd>b. Orientation of two centers of circles with respect to each other (V6) :  -6 to +6
+      </dd>
+    </dl>
+    <p>Note : V12 acts a decision variable which establishes that whether an image would be accepted or not as per the suggested ranges across all parameters.</p>
+    <div align="middle" class="Videolink1">
+    <iframe src="https://drive.google.com/file/d/1GX-4swOjWkGlSQ0QOAEmXa--51mTzzNI/preview" width="480" height="290" allow="autoplay"></iframe>
+    </div>
+    <div align="middle">
+    <button  class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off" onclick="openForm()">Process a new image</button>
+  </div>
+  <div align="middle">
+    <button  class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off" onclick="openForm()">Display old images</button></p>
+  </div>
+  <div class="xx" style="padding:20px;"></div>
+    <div class="form-popup" id="myForm" >
+      <form action="/concentric" class="form-container" method="post" >
+        <br>
+        <h1 style="color: black;">Survey of new board</h1>
+    
+        <label for="email" style="color: black;"><b>Board ID</b></label>
+        <input type="text" placeholder="Enter BoardID"  required>
+    
+        <label for="psw" style="color: black;"><b>Manfacturer</b></label>
+        <input type="text" placeholder="Enter Manufacturer"  required>
+
+        <label for="boards" style="color: black;"><b><br>Board Type</br></b></label>
+        <select id="boards" >
+          <option value="SH_preseries">SH_preseries</option>
+          <option value="SH_test">SH_test</option>
+          <option value="SH_production">SH_production</option>
+          <option value="NSH_tes">NSH_test</option>
+          <option value="NSH_preseries">NSH_preseries</option>
+        </select>
+
+        <!-- <label for="image" style="color: black;"><b><br>Upload a Image</br></b></label>
+        <input type="file" id="myFile"  accept=".jpg, .jpeg, .png"> -->
+<br>
+        <label for="filepath" style="color: black;"><b>File Path 1</b></label>
+        <input type="text" placeholder="Filepath" name="flag" >
+
+
+        <button type="submit" class="btn" value="click" >Submit</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      </form>
+    </div>
+    <div>
+      
+      {% if hi %}
+      <center>
+        <h1 align="middle" style="font-weight: bold;">Results</h1>
+        <img src="static/Image1.jpg" style="height: 50%; width: 30%;">
+        <h3 style="color: rgb(0, 0, 10);font-weight:bold" class="let_space">
+          Orientation of the signal Pads are: {{hi.OrientationSignalPad}}<br>
+          Area of each signal Pad is: {{hi.AreaOfPad}}<br>
+          Offset of the centers of the circle is: {{hi.Offset}} 
+        </h3>
+        <a href = "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+      Download = "test_image">
+         <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off"type = "button"> Download Results </button>
+      </a>
+      <div class="xx" style="padding:20px;"></div>
+      </center>
+      {% endif %}
+    </div>
+    
+      
+    <div>
+      
+   
+  </div> 
+
+</header>
+
+
+<script>
+    var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length} ;
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  x[slideIndex-1].style.display = "block";
+}
+// Modal Image Gallery
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  var captionText = document.getElementById("caption");
+  captionText.innerHTML = element.alt;
+}
+
+
+// Toggle between showing and hiding the sidebar when clicking the menu icon
+var mySidebar = document.getElementById("mySidebar");
+
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+  } else {
+    mySidebar.style.display = 'block';
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+    mySidebar.style.display = "none";
+}
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+  document.getElementById("hello").style.display = "none";
+  document.getElementById("hello2").style.display = "none";
+}
+
+function openForm2() {
+  document.getElementById("myForm2").style.display = "block";
+  document.getElementById("hello").style.display = "none";
+  document.getElementById("hello2").style.display = "none";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+</script>
+
+</body>
+</html>
